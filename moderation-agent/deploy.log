@@ -1,0 +1,53 @@
+🚀 Deploying wandern-moderation-agent to us-central1...
+Preparing function...
+.done.
+Updating function (may take a while)...
+[Build].........................................................................................................................................................................................................................................................................................................................................................................done
+[Service]............................................................................................................................................................................warning
+Completed with warnings:
+  [INFO] A new revision will be deployed serving with 100% traffic.
+You can view your function in the Cloud Console here: https://console.cloud.google.com/functions/details/us-central1/wandern-moderation-agent?project=wandern-project-startup
+
+buildConfig:
+  automaticUpdatePolicy: {}
+  build: projects/1071951656531/locations/us-central1/builds/421286c0-6e69-42b9-88be-2c31998c6ecf
+  dockerRegistry: ARTIFACT_REGISTRY
+  dockerRepository: projects/wandern-project-startup/locations/us-central1/repositories/gcf-artifacts
+  entryPoint: moderate_content
+  runtime: python311
+  serviceAccount: projects/wandern-project-startup/serviceAccounts/1071951656531-compute@developer.gserviceaccount.com
+  source:
+    storageSource:
+      bucket: gcf-v2-sources-1071951656531-us-central1
+      generation: '1767205691532862'
+      object: wandern-moderation-agent/function-source.zip
+  sourceProvenance:
+    resolvedStorageSource:
+      bucket: gcf-v2-sources-1071951656531-us-central1
+      generation: '1767205691532862'
+      object: wandern-moderation-agent/function-source.zip
+createTime: '2025-12-31T15:09:01.592704066Z'
+environment: GEN_2
+labels:
+  deployment-tool: cli-gcloud
+name: projects/wandern-project-startup/locations/us-central1/functions/wandern-moderation-agent
+satisfiesPzi: true
+serviceConfig:
+  allTrafficOnLatestRevision: true
+  availableCpu: '0.1666'
+  availableMemory: 256M
+  environmentVariables:
+    GOOGLE_API_KEY: AIzaSyAJ7yQ1_TqugiK5hdA1ZqtyNlT6lkLc4B4
+    LOG_EXECUTION_ID: 'true'
+  ingressSettings: ALLOW_ALL
+  maxInstanceCount: 100
+  maxInstanceRequestConcurrency: 1
+  revision: wandern-moderation-agent-00002-ruz
+  service: projects/wandern-project-startup/locations/us-central1/services/wandern-moderation-agent
+  serviceAccountEmail: 1071951656531-compute@developer.gserviceaccount.com
+  timeoutSeconds: 60
+  uri: https://wandern-moderation-agent-zdku5kri5a-uc.a.run.app
+state: ACTIVE
+updateTime: '2025-12-31T18:29:05.721742676Z'
+url: https://us-central1-wandern-project-startup.cloudfunctions.net/wandern-moderation-agent
+✅ Deployment complete!
