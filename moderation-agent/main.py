@@ -123,21 +123,38 @@ def moderate_content(request: Request):
 
 def _scan_text(text: str) -> dict:
     """Moderate text content using fast text model."""
-    prompt = f"""Role: Content Safety Agent for a family-friendly walking/exploration app.
+    prompt = f"""Role: Strict Content Safety Agent for Wandern - a family-friendly walking/exploration app.
 Task: Analyze the following text for App Store compliance.
 
-Strictly Flag:
-- Hate Speech / Harassment / Bullying
-- Sexually Explicit / NSFW content
-- Dangerous / Illegal Acts / Self-harm
-- Severe Profanity (mild PG-13 is okay)
-- Personal info sharing (phone numbers, addresses)
-- Spam / Advertising
+STRICT CONTENT POLICY - FLAG ANY OF THESE:
 
-Input Text: "{text}"
+1. NUDITY/SEXUAL CONTENT:
+   - Any references to nudity, pornography, or explicit sexual content
+   - Shirtless photos of men are NOT allowed (except in clear beach/pool context)
+   - Bikini tops and swimwear are OK in beach contexts
+   - Any sexualized content involving minors (ZERO TOLERANCE)
+
+2. AGE RESTRICTIONS:
+   - Content referencing children under 13 participating in app activities
+   - Content that could endanger minors
+   - Predatory behavior of any kind
+
+3. VIOLENCE/SAFETY:
+   - Hate Speech / Harassment / Bullying
+   - Violence, gore, or disturbing content
+   - Dangerous / Illegal Acts / Self-harm
+   - Threats or intimidation
+
+4. OTHER:
+   - Severe Profanity (mild PG-13 is okay)
+   - Personal info sharing (phone numbers, addresses)
+   - Spam / Advertising
+   - Illegal drug use or sales
+
+Input Text: \"{text}\"
 
 Output ONLY valid JSON:
-{{"is_safe": true/false, "flag_reason": "short explanation if flagged, else null", "category": "hate|sexual|violence|spam|safe"}}"""
+{{\"is_safe\": true/false, \"flag_reason\": \"short explanation if flagged, else null\", \"category\": \"nudity|age|violence|spam|safe\"}}"""
     
     try:
         response = text_model.generate_content(prompt)
@@ -184,18 +201,34 @@ def _scan_image(media_url: str = None, media_b64: str = None) -> dict:
             "data": image_data
         }
         
-        prompt = """Role: Content Safety Agent for a family-friendly walking app.
+        prompt = """Role: Strict Content Safety Agent for Wandern - a family-friendly walking app.
 Analyze this image for App Store compliance.
 
-Flag if the image contains:
-- Nudity or sexually explicit content
-- Violence, gore, or disturbing imagery
-- Hate symbols or offensive gestures
-- Dangerous activities
-- Personal information visible
+STRICT CONTENT POLICY - FLAG IF IMAGE CONTAINS:
+
+1. NUDITY/SEXUAL:
+   - Any nudity (full or partial)
+   - Shirtless men (FLAG unless clearly beach/pool setting)
+   - Sexually suggestive poses or content
+   - Bikini tops and swimwear are OK in beach/pool contexts only
+
+2. AGE CONCERNS:
+   - Children who appear under 13 years old (FLAG - app is 13+)
+   - If a person looks under 18 but over 13, flag for review
+   - Any content sexualizing minors (ZERO TOLERANCE - immediate flag)
+
+3. VIOLENCE/SAFETY:
+   - Violence, gore, blood, or disturbing imagery
+   - Weapons being used threateningly
+   - Hate symbols, Nazi imagery, offensive gestures
+   - Dangerous activities that could cause harm
+
+4. PRIVACY:
+   - Visible personal information (addresses, credit cards, IDs)
+   - License plates, house numbers in identifiable context
 
 Output ONLY valid JSON:
-{"is_safe": true/false, "flag_reason": "short explanation if flagged, else null", "category": "sexual|violence|hate|safe"}"""
+{\"is_safe\": true/false, \"flag_reason\": \"specific explanation if flagged, else null\", \"category\": \"nudity|age|violence|privacy|safe\", \"detected_minors\": true/false}"""
 
         response = vision_model.generate_content([prompt, image_part])
         cleaned = response.text.replace('```json', '').replace('```', '').strip()
